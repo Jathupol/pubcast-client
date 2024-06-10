@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -12,9 +14,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3001",
-    methods: ["GET", "POST"]
-  }
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST'],
+  },
 });
 const prisma = new PrismaClient();
 
@@ -23,11 +25,13 @@ app.use(bodyParser.json({ limit: '1000mb' }));
 app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
 
 // CORS setup
-app.use(cors({
-  origin: 'http://localhost:3001',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+  })
+);
 
 // Static file serving
 const uploadDir = path.join(__dirname, 'uploads');
@@ -43,27 +47,32 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
-  }
+  },
 });
-const upload = multer({ 
-  storage: storage, 
-  limits: { fileSize: Infinity } // No limit on file size
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: Infinity }, // No limit on file size
 });
 
 app.post('/api/send', upload.single('image'), async (req, res) => {
-  const { message, username } = req.body;
+  const { message, username, rate } = req.body;
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-  console.log('Received data:', { username, message, imageUrl });
+  console.log('Received data:', { username, message, imageUrl, rate });
 
   try {
+    // Check rate condition before sending
+    if (!checkRateCondition(rate)) {
+      return res.status(400).json({ error: 'Invalid rate option selected.' });
+    }
+
     const newMessage = await prisma.message.create({
       data: {
         username,
         message,
         imageUrl,
-        createdAt: new Date() // เพิ่มเวลาที่สร้างข้อมูล
-      }
+        createdAt: new Date(),
+      },
     });
 
     io.emit('new_message', { id: newMessage.id, username, message, imageUrl });
@@ -71,31 +80,30 @@ app.post('/api/send', upload.single('image'), async (req, res) => {
 
     res.status(200).json({ message: 'Message sent' });
 
-    // เริ่มต้นนับถอยหลัง 30 วินาที
+    // Start countdown for 30 seconds
     setTimeout(async () => {
       try {
-        // หาข้อมูลที่มีค่าเวลาน้อยกว่าหรือเท่ากับเวลาที่ตั้งไว้
+        // Find messages with createdAt less than or equal to the set time
         const oldMessage = await prisma.message.findFirst({
           where: { createdAt: { lte: newMessage.createdAt } },
           orderBy: { createdAt: 'asc' },
         });
-        
-        // ถ้ามีข้อมูลให้ลบทันที
+
+        // If there is a message, delete it immediately
         if (oldMessage) {
           await prisma.message.delete({
             where: { id: oldMessage.id },
           });
 
           console.log('Message deleted:', oldMessage);
-          
-          // ส่งการอัพเดทหากมีการลบข้อมูล
+
+          // Send update if data is deleted
           io.emit('delete_message', { id: oldMessage.id });
         }
       } catch (error) {
         console.error('Error deleting message:', error);
       }
-    }, 30000); // 30 วินาที
-
+    }, 30000); // 30 seconds
   } catch (error) {
     console.error('Error sending message:', error);
     res.status(500).json({ error: 'Error sending message' });
@@ -111,6 +119,20 @@ io.on('connection', (socket) => {
     console.log('Client disconnected');
   });
 });
+
+// Function to check rate condition
+const checkRateCondition = (selectedRate) => {
+  const validRates = [
+    '40 seconds for 99 THB',
+    '60 seconds for 139 THB',
+    '80 seconds for 169 THB',
+    '40 seconds + text for 149 THB',
+    '60 seconds + text for 189 THB',
+    '80 seconds + text for 219 THB',
+  ];
+
+  return validRates.includes(selectedRate);
+};
 
 // Start the server
 const PORT = process.env.PORT || 3000;

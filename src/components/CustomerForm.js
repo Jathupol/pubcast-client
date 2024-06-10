@@ -1,3 +1,5 @@
+// src/components/CustomerForm.js
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Button, Image } from 'react-bootstrap';
@@ -16,8 +18,9 @@ const CustomerForm = () => {
     e.preventDefault();
 
     try {
-      if (!rate) {
-        alert('Please select a rate option.');
+      // Check rate selection
+      if (!rate || !checkRateCondition(rate)) {
+        alert('Please select a valid rate option before proceeding.');
         return;
       }
 
@@ -29,8 +32,8 @@ const CustomerForm = () => {
 
       const response = await axios.post('http://localhost:3000/api/send', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       console.log('Response:', response.data);
@@ -67,14 +70,27 @@ const CustomerForm = () => {
     setMessage('');
   };
 
+  const checkRateCondition = (selectedRate) => {
+    const validRates = [
+      '40 seconds for 99 THB',
+      '60 seconds for 139 THB',
+      '80 seconds for 169 THB',
+      '40 seconds + text for 149 THB',
+      '60 seconds + text for 189 THB',
+      '80 seconds + text for 219 THB',
+    ];
+
+    return validRates.includes(selectedRate);
+  };
+
   return (
     <div className="form-container">
-      <h2 className="text-white">แจกวาร์ปพร้อมส่งข้อความ</h2>
+      <h2 className="text-white">แจกวาร์ปๆๆๆๆ🎉</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formUsername">
           <Form.Control
             type="text"
-            placeholder="ใส่วาร์ป"
+            placeholder="ใส่วาร์ปตรงนี้<3"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="form-input"
@@ -85,7 +101,7 @@ const CustomerForm = () => {
           <Form.Control
             as="textarea"
             rows={3}
-            placeholder="ข้อความ"
+            placeholder="พิมพ์ข้อความ"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className="form-input"
@@ -132,25 +148,34 @@ const CustomerForm = () => {
             <ThreeDotsVertical className="rate-icon" /> 80 seconds for 169 THB
           </Button>
           <Button
-            variant={rate === '40 seconds + text for 149 THB' ? 'primary' : 'dark'}
+            variant={
+              rate === '40 seconds + text for 149 THB' ? 'primary' : 'dark'
+            }
             className="rate-button"
             onClick={() => handleRateSelection('40 seconds + text for 149 THB')}
           >
-            <ThreeDotsVertical className="rate-icon" /> 40 seconds + text for 149 THB
+            <ThreeDotsVertical className="rate-icon" /> 40 seconds + text for
+            149 THB
           </Button>
           <Button
-            variant={rate === '60 seconds + text for 189 THB' ? 'primary' : 'dark'}
+            variant={
+              rate === '60 seconds + text for 189 THB' ? 'primary' : 'dark'
+            }
             className="rate-button"
             onClick={() => handleRateSelection('60 seconds + text for 189 THB')}
           >
-            <ThreeDotsVertical className="rate-icon" /> 60 seconds + text for 189 THB
+            <ThreeDotsVertical className="rate-icon" /> 60 seconds + text for
+            189 THB
           </Button>
           <Button
-            variant={rate === '80 seconds + text for 219 THB' ? 'primary' : 'dark'}
+            variant={
+              rate === '80 seconds + text for 219 THB' ? 'primary' : 'dark'
+            }
             className="rate-button"
             onClick={() => handleRateSelection('80 seconds + text for 219 THB')}
           >
-            <ThreeDotsVertical className="rate-icon" /> 80 seconds + text for 219 THB
+            <ThreeDotsVertical className="rate-icon" /> 80 seconds + text for
+            219 THB
           </Button>
         </div>
 

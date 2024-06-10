@@ -26,23 +26,49 @@ const MessageDisplay = () => {
       setMessage(data);
       setShowMessage(true); // Show the message with animation
 
-      // Set timeout to clear message after 30 seconds
-      timeoutId = setTimeout(() => {
-        setShowMessage(false); // Hide the message with animation
-        setTimeout(() => {
-          setMessage(null);
-        }, 3000); // Match the duration of the hide animation
-      }, 30000);
+      // Set timeout to clear message after the specified time
+      if (data.rate.includes('40 seconds')) {
+        timeoutId = setTimeout(() => {
+          setShowMessage(false); // Hide the message with animation
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000); // Match the duration of the hide animation
+        }, 40000); // 40 seconds
+      } else if (data.rate.includes('60 seconds')) {
+        timeoutId = setTimeout(() => {
+          setShowMessage(false); // Hide the message with animation
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000); // Match the duration of the hide animation
+        }, 60000); // 60 seconds
+      } else if (data.rate.includes('80 seconds')) {
+        timeoutId = setTimeout(() => {
+          setShowMessage(false); // Hide the message with animation
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000); // Match the duration of the hide animation
+        }, 80000); // 80 seconds
+      }
+
+      console.log('Message received:', data);
+    });
+
+    socket.on('delete_message', (data) => {
+      if (message && message.id === data.id) {
+        setMessage(null);
+        setShowMessage(false);
+      }
     });
 
     return () => {
       // Clean up socket listener and timeout
       socket.off('new_message');
+      socket.off('delete_message');
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [message]);
 
   const handleDeleteMessage = () => {
     setShowMessage(false); // Hide the message with animation
@@ -79,7 +105,7 @@ const MessageDisplay = () => {
                 />
               </div>
             )}
-            <Card.Text>{message.message}</Card.Text>
+            {message.message && <Card.Text>{message.message}</Card.Text>}
           </Card.Body>
         </Card>
       )}

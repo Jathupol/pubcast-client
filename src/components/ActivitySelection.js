@@ -8,7 +8,7 @@ import { MusicNote, Gift, CameraVideo, Image } from 'react-bootstrap-icons'; // 
 const ActivitySelection = () => {
   return (
     <Container fluid className="activity-selection-container">
-      <h2 className="text-white">Choose an Activity</h2>
+      <h2 className="text-white">🌟Choose an Activity🌟</h2>
       <Row>
         <Col xs={12} sm={6} className="mb-3">
           <Link to="/customer-form" className="activity-button">
