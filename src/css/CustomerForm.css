@@ -1,0 +1,102 @@
+/* CustomerForm.css */
+
+.form-container {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .form-input {
+    width: 100%;
+    max-width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #495057;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .form-input::placeholder {
+    color: #adb5bd;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #a11800;
+  }
+  
+  .file-input {
+    margin-top: 10px;
+  }
+  
+  .rate-buttons-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+  
+  .rate-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #a11800;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .rate-button:hover {
+    background-color: #610f00;
+  }
+  
+  .rate-button:active,
+  .rate-button:focus {
+    background-color: #5c0e00;
+  }
+  
+  .rate-button.primary {
+    background-color: #6f1800;
+  }
+  
+  .rate-button.primary:hover {
+    background-color: #a11800;
+  }
+  
+  .rate-icon {
+    margin-right: 10px;
+  }
+  
+  .submit-button {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 576px) {
+    .rate-buttons-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .image-preview {
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  .image-preview img {
+    width: 8%; /* Adjust to 100% of the parent width */
+    max-width: 100px; /* Max width of the preview image */
+    border-radius: 10px;
+  }
