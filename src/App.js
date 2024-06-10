@@ -1,13 +1,15 @@
 // src/App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CustomerForm from './components/CustomerForm';
 import MessageDisplay from './components/MessageDisplay';
 import ActivitySelection from './components/ActivitySelection';
-import SendVideo from './components/SendVideo'; // Import the new component for sending video
-import AdvertiseImage from './components/AdvertiseImage'; // Import the new component for advertising image
+import SendVideo from './components/SendVideo';
+import AdvertiseImage from './components/AdvertiseImage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // Import the separated CSS file
+import './App.css';
+import PaymentPage from './components/PaymentPage';
 
 const App = () => {
   return (
@@ -18,9 +20,10 @@ const App = () => {
           <Route path="/customer-form" element={<CustomerForm />} />
           <Route path="/display" element={<MessageDisplay />} />
           <Route path="/request-song-tip" element={<div>Request Song + Tip Page</div>} />
-          <Route path="/giveaway-warp" element={<CustomerForm />} /> {/* Change to MessageDisplay for giveaway warp */}
-          <Route path="/send-video" element={<SendVideo />} /> {/* New route for sending video */}
-          <Route path="/advertise-image" element={<AdvertiseImage />} /> {/* New route for advertising image */}
+          <Route path="/giveaway-warp" element={<CustomerForm />} />
+          <Route path="/send-video" element={<SendVideo />} /> 
+          <Route path="/advertise-image" element={<AdvertiseImage />} /> 
+          <Route path="/payment" element={<PaymentPage />} /> {/* PaymentPage route */}
         </Routes>
       </div>
     </Router>

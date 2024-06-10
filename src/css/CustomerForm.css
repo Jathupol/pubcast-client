@@ -101,3 +101,30 @@
     max-width: 100px; /* Max width of the preview image */
     border-radius: 10px;
   }
+
+/* Social Media Buttons Container */
+.social-media-buttons-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .social-media-button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    
+  }
+  
+  .social-media-button:hover {
+    background-color: #a11800;
+  }
+  
+  .social-media-icon {
+    color: #ffffff;
+  }
